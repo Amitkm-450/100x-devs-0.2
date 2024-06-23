@@ -11,7 +11,10 @@ const wss = new ws_1.WebSocketServer({ server: httpServer });
 wss.on('connection', function connection(ws) {
     ws.on('error', console.error);
     ws.on('message', function message(data) {
-        console.log(data.toString());
+        wss.clients.forEach(function each(client) {
+            if (client.readyState === ws_1.WebSocket.OPEN) {
+                client.send(data.toString());
+            }
+        });
     });
-    ws.send('Hello! Message From Server!!');
 });
